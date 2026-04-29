@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-navy-950: #0F172A;
+  --color-navy-800: #1E3A8A;
+  --color-gold-600: #CA8A04;
+  --color-gold-500: #EAB308;
+  --font-sans: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  background-color: #F8FAFC;
+  color: #020617;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,160 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id          String   @id @default(uuid())
+  googleId    String   @unique
+  email       String
+  displayName String
+  photoUrl    String?
+  createdAt   DateTime @default(now())
+
+  goldHoldings       GoldHolding[]
+  goldPrice          GoldPrice?
+  mutualFundHoldings MutualFundHolding[]
+  fundNavs           FundNav[]
+  bankDeposits       BankDeposit[]
+  mutualFundLots     MutualFundLot[]
+  allocationTarget   AllocationTarget?
+  portfolioSnapshots PortfolioSnapshot[]
+
+  @@map("users")
+}
+
+model GoldHolding {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label         String
+  weight        Float
+  unit          String
+  purchasePrice Float
+  purchaseDate  String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("gold_holdings")
+}
+
+model GoldPrice {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  value     Float
+  updatedAt String
+
+  @@map("gold_prices")
+}
+
+model MutualFundHolding {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fundName    String
+  units       Float
+  purchaseNav Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("mutual_fund_holdings")
+}
+
+model FundNav {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fundName  String
+  value     Float
+  updatedAt String
+
+  @@unique([userId, fundName])
+  @@map("fund_navs")
+}
+
+model SystemGoldPrice {
+  id        String @id @default("singleton")
+  price     Float
+  updatedAt String
+  source    String
+
+  @@map("system_gold_prices")
+}
+
+model SystemXauUsdPrice {
+  id        String @id @default("singleton")
+  price     Float
+  updatedAt String
+  source    String
+
+  @@map("system_xauusd_prices")
+}
+
+model SystemVnIndex {
+  id        String @id @default("singleton")
+  price     Float
+  updatedAt String
+  source    String
+
+  @@map("system_vnindex")
+}
+
+model MutualFundLot {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fundName     String
+  purchaseDate String
+  units        Float
+  purchaseNav  Float
+  createdAt    DateTime @default(now())
+
+  @@map("mutual_fund_lots")
+}
+
+model BankDeposit {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bankName   String
+  label      String
+  principal  Float
+  annualRate Float
+  startDate  String
+  termMonths Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("bank_deposits")
+}
+
+model AllocationTarget {
+  id         String @id @default(uuid())
+  userId     String @unique
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  goldPct    Float
+  fundPct    Float
+  depositPct Float
+
+  @@map("allocation_targets")
+}
+
+model PortfolioSnapshot {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date         String
+  goldValue    Float
+  fundValue    Float
+  depositValue Float
+  totalValue   Float
+  createdAt    DateTime @default(now())
+
+  @@unique([userId, date])
+  @@map("portfolio_snapshots")
+}
