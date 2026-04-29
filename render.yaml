@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     rootDir: server
-    buildCommand: npm install --include=dev && npm run build
+    buildCommand: npm install --production=false && npm run build
     startCommand: node dist/main
     preDeployCommand: npx prisma migrate deploy
     envVars:
