@@ -49,6 +49,7 @@ export type DepositStatus = 'Active' | 'Matured'
 
 export interface DepositCalc {
   interest: number          // full term interest (at maturity)
+  accruedInterest: number   // prorated interest earned so far
   currentValue: number      // principal only if active; principal + interest if matured
   maturityValue: number
   maturityDate: string
@@ -69,5 +70,6 @@ export function calculateDepositValue(deposit: BankDeposit, today = new Date()):
   const maturityValue = deposit.principal + interest
   const status: DepositStatus = today >= maturity ? 'Matured' : 'Active'
   const currentValue = status === 'Matured' ? maturityValue : deposit.principal
-  return { interest, currentValue, maturityValue, maturityDate, daysElapsed: elapsed, daysRemaining, status }
+  const accruedInterest = totalDays > 0 ? interest * (elapsed / totalDays) : 0
+  return { interest, accruedInterest, currentValue, maturityValue, maturityDate, daysElapsed: elapsed, daysRemaining, status }
 }
