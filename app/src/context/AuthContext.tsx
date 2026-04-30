@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { api, clearToken } from '../lib/apiClient'
+import { api, clearToken, BASE_URL } from '../lib/apiClient'
 
 interface AuthUser {
   id: string
@@ -17,7 +17,6 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null)
@@ -31,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   function signIn() {
-    window.location.href = `${API_URL}/auth/google`
+    window.location.href = `${BASE_URL}/auth/google`
   }
 
   function signOut() {
