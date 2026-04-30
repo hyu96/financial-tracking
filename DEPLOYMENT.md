@@ -76,8 +76,15 @@ Without a catch-all redirect, deep links (e.g. `/gold`) return 404 on Netlify. T
 | `GOOGLE_CLIENT_ID` | Render dashboard | Google OAuth |
 | `GOOGLE_CLIENT_SECRET` | Render dashboard | Google OAuth |
 | `FRONTEND_URL` | Render dashboard | NestJS CORS — must match Netlify URL exactly (including `https://`) |
+| `BACKEND_URL` | Render dashboard | NestJS Google OAuth callback URL — must be the Render service URL (e.g. `https://financial-tracking-h8aa.onrender.com`) |
 | `NODE_ENV` | Render dashboard | Set to `production` |
 | `VITE_API_URL` | Netlify dashboard | React app — must point to Render service URL |
+
+### Google OAuth callback URL is hardcoded by default
+`google.strategy.ts` originally had `callbackURL` hardcoded to `localhost:3000`. In production this causes Google to redirect back to localhost after login. Always read it from `BACKEND_URL` env var:
+```typescript
+callbackURL: `${process.env.BACKEND_URL ?? 'http://localhost:3000'}/auth/google/callback`
+```
 
 ### Google OAuth after deployment
 After deploying, update Google Cloud Console OAuth credentials:
